@@ -25,7 +25,7 @@ namespace src.Core.Repositories
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate);
+        IEnumerable<TEntity> Where(Expression<Func<TEntity, bool>> predicate);
 
         //category.SingleOrDefaultAsync(x => x.name = "name") bir tane donecek yada ilk olan sorguyu geri donderecek bize.
         /// <summary>
@@ -59,7 +59,7 @@ namespace src.Core.Repositories
         /// Çoklu silme işlemi.
         /// </summary>
         /// <param name="entity"></param>
-        void RemoveRange(IEnumerable<TEntity> entity);
+        void RemoveRange(IEnumerable<TEntity> entities);
 
         /// <summary>
         /// Güncelleme işlemi.
