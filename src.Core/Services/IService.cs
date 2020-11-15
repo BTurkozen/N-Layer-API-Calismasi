@@ -25,7 +25,7 @@ namespace src.Core.Services
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate);
+        Task<IEnumerable<TEntity>> Where(Expression<Func<TEntity, bool>> predicate);
 
         //category.SingleOrDefaultAsync(x => x.name = "name") bir tane donecek yada ilk olan sorguyu geri donderecek bize.
         /// <summary>
@@ -40,14 +40,14 @@ namespace src.Core.Services
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        Task AddAsync(TEntity entity);
+        Task<TEntity> AddAsync(TEntity entity);
 
         /// <summary>
         /// Çoklu kayıt ekleme.
         /// </summary>
         /// <param name="entities"></param>
         /// <returns></returns>
-        Task AddRangeAsync(IEnumerable<TEntity> entities);
+        Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities);
 
         /// <summary>
         /// Tekli silme işlemi.
@@ -59,7 +59,7 @@ namespace src.Core.Services
         /// Çoklu silme işlemi.
         /// </summary>
         /// <param name="entity"></param>
-        void RemoveRange(IEnumerable<TEntity> entity);
+        void RemoveRange(IEnumerable<TEntity> entities);
 
         /// <summary>
         /// Güncelleme işlemi.

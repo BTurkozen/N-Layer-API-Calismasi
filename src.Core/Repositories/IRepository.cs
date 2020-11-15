@@ -25,7 +25,7 @@ namespace src.Core.Repositories
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        IEnumerable<TEntity> Where(Expression<Func<TEntity, bool>> predicate);
+        Task<IEnumerable<TEntity>> Where(Expression<Func<TEntity, bool>> predicate);
 
         //category.SingleOrDefaultAsync(x => x.name = "name") bir tane donecek yada ilk olan sorguyu geri donderecek bize.
         /// <summary>
