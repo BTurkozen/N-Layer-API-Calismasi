@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using src.API.DTOs;
+using src.API.DTOs.Filters;
 using src.Core.Models;
 using src.Core.Services;
 using System;
@@ -48,6 +49,7 @@ namespace src.API.Controllers
         }
 
         [HttpPost]
+        [ValidationFilter]
         public async Task<IActionResult> Save(ProductDto productDto)
         {
             var newProduct = await _productService.AddAsync(_mapper.Map<Product>(productDto));
