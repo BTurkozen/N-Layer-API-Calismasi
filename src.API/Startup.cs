@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using src.API.DTOs.Filters;
+using src.API.Filters;
 using src.Core.Repositories;
 using src.Core.Services;
 using src.Core.UnitOfWorks;
@@ -27,7 +29,7 @@ namespace src.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            
+
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:StrConnec"].ToString(), o => o.MigrationsAssembly("src.Data")));
 
             services.AddAutoMapper(typeof(Startup));
@@ -37,8 +39,13 @@ namespace src.API
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ProductNotFoundFilter>();
 
-            services.AddControllers();
+            services.AddControllers(o =>
+            {
+                //Yazdığımız custom filter'ı global seviyede bütün controllerimiza eklemiş olduk.
+                o.Filters.Add(new ValidationFilter());
+            });
 
             //Filter'ları kendim kontrol edip biçimlendireceğim anlamında.
             services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);

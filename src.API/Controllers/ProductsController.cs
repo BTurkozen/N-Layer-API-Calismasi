@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using src.API.DTOs;
 using src.API.DTOs.Filters;
+using src.API.Filters;
 using src.Core.Models;
 using src.Core.Services;
 using System;
@@ -32,7 +33,7 @@ namespace src.API.Controllers
             return Ok(_mapper.Map<IEnumerable<ProductDto>>(products));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), ServiceFilter(typeof(ProductNotFoundFilter))]
         public async Task<IActionResult> GetById(int id)
         {
             var prodcut = await _productService.GetByIdAsync(id);
@@ -40,7 +41,7 @@ namespace src.API.Controllers
             return Ok(_mapper.Map<ProductDto>(prodcut));
         }
 
-        [HttpGet("{id}/category")]
+        [HttpGet("{id}/category"), ServiceFilter(typeof(ProductNotFoundFilter))]
         public async Task<IActionResult> GetWithCategoryById(int id)
         {
             var product = await _productService.GetWithCategoryByIdAsync(id);
@@ -49,7 +50,6 @@ namespace src.API.Controllers
         }
 
         [HttpPost]
-        [ValidationFilter]
         public async Task<IActionResult> Save(ProductDto productDto)
         {
             var newProduct = await _productService.AddAsync(_mapper.Map<Product>(productDto));
@@ -65,7 +65,7 @@ namespace src.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), ServiceFilter(typeof(ProductNotFoundFilter))]
         public IActionResult Remove(int id)
         {
             var deleteProduct = _productService.GetByIdAsync(id).Result;
