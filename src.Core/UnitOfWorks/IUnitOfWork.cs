@@ -26,6 +26,6 @@ namespace src.Core.UnitOfWorks
         /// </summary>
         /// <returns></returns>
         Task CommitAsync();
-        void commit();
+        void Commit();
     }
 }

@@ -23,7 +23,7 @@ namespace src.Data.UnitOfWorks
 
         public ICategoryRepository Categories => _categoryRepository = _categoryRepository ?? new CategoryRepository(_context);
 
-        public void commit()
+        public void Commit()
         {
             _context.SaveChanges();
         }
