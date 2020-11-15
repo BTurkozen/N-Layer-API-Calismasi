@@ -14,7 +14,7 @@ namespace src.Data.Repositories
         protected readonly DbContext _context;
         private readonly DbSet<TEntity> _dbset;
 
-        public Repository(DbContext context)
+        public Repository(AppDbContext context)
         {
             _context = context;
             _dbset = _context.Set<TEntity>();
