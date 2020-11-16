@@ -1,14 +1,10 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using src.API.DTOs.Filters;
-using src.API.Extensions;
-using src.API.Filters;
 using src.Core.Repositories;
 using src.Core.Services;
 using src.Core.UnitOfWorks;
@@ -16,8 +12,9 @@ using src.Data;
 using src.Data.Repositories;
 using src.Data.UnitOfWorks;
 using src.Service.Services;
+using src.Web.Filters;
 
-namespace src.API
+namespace src.Web
 {
     public class Startup
     {
@@ -28,9 +25,9 @@ namespace src.API
 
         public IConfiguration Configuration { get; }
 
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:StrConnec"].ToString(), o => o.MigrationsAssembly("src.Data")));
 
             services.AddAutoMapper(typeof(Startup));
@@ -40,27 +37,25 @@ namespace src.API
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<ProductNotFoundFilter>();
-
-            services.AddControllers(o =>
-            {
-                //Yazdığımız custom filter'ı global seviyede bütün controllerimiza eklemiş olduk.
-                o.Filters.Add(new ValidationFilter());
-            });
-
-            //Filter'ları kendim kontrol edip biçimlendireceğim anlamında.
-            services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
+            services.AddScoped<CategoryNotFoundFilter>();
+            services.AddControllersWithViews();
         }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseCustomException();
-
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
@@ -68,7 +63,9 @@ namespace src.API
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
