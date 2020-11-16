@@ -1,18 +1,12 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using src.Core.Repositories;
-using src.Core.Services;
-using src.Core.UnitOfWorks;
-using src.Data;
-using src.Data.Repositories;
-using src.Data.UnitOfWorks;
-using src.Service.Services;
+using src.Web.ApiServices;
 using src.Web.Filters;
+using System;
 
 namespace src.Web
 {
@@ -28,15 +22,12 @@ namespace src.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:StrConnec"].ToString(), o => o.MigrationsAssembly("src.Data")));
-
+            services.AddHttpClient<CategoryApiService>(opt =>
+            {
+                opt.BaseAddress = new Uri(Configuration["baseUrl"]);
+            });
+          
             services.AddAutoMapper(typeof(Startup));
-
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped(typeof(IService<>), typeof(Service<>));
-            services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<CategoryNotFoundFilter>();
             services.AddControllersWithViews();
         }
